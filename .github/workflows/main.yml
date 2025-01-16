@@ -1,0 +1,38 @@
+name: Run OPA Policy Upload
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:  # Allows manual triggering
+
+env:
+  TF_TOKEN: ${{ secrets.TF_TOKEN }}  # Your Terraform Cloud token
+  POLICY_SET_ID: ${{ secrets.POLICY_SET_ID }}
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'  # Specify your Go version here
+
+    - name: Install dependencies
+      run: |
+        go mod download
+        go mod verify
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Update Policies
+      env:
+        TF_TOKEN: ${{ secrets.TF_TOKEN }}
+        POLICY_SET_ID: ${{ secrets.POLICY_SET_ID }}
+      run: go run main.go
