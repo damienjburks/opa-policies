@@ -25,19 +25,23 @@ This repository serves as the omnibus OPA (Open Policy Agent) policy combiner fo
 
 1. Install [Open Policy Agent (OPA)](https://www.openpolicyagent.org/docs/latest/).
 2. Generate a Terraform plan JSON:
+
    ```bash
    terraform plan -out=tfplan.binary
    terraform show -json tfplan.binary > tfplan.json
    ```
+
 3. Clone this repository:
+
    ```bash
-   git clone https://github.com/<your-username>/opa-policies-terraform.git
-   cd opa-policies-terraform
+   git clone https://github.com/damienjburks/opa-policies.git
+   cd opa-policies
    ```
 
 ### Running Policies
 
 Evaluate a specific Terraform plan JSON against the policies:
+
 ```bash
 opa eval -i tfplan.json -d . "data.aws.terraform.deny"
 ```
@@ -45,6 +49,7 @@ opa eval -i tfplan.json -d . "data.aws.terraform.deny"
 ### Example Output
 
 If the Terraform plan violates any policies, you will receive a detailed list of issues:
+
 ```json
 [
   "S3 bucket 'aws_s3_bucket.my_bucket' must have versioning enabled.",
@@ -61,6 +66,7 @@ If the Terraform plan violates any policies, you will receive a detailed list of
 ### Testing Policies
 
 Use the following command to test individual policies:
+
 ```bash
 opa eval -i tfplan.json -d <policy-file> "data.<package>.deny"
 ```
@@ -68,24 +74,7 @@ opa eval -i tfplan.json -d <policy-file> "data.<package>.deny"
 ### Debugging Policies
 
 Use OPA's trace feature to debug:
+
 ```bash
 opa eval -i tfplan.json -d <policy-file> --log-level debug "data.<package>.deny"
 ```
-
-## Contributing
-
-Contributions are welcome! If you have ideas for new policies, improvements, or bug fixes, please open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Inspired by the power of Open Policy Agent and the flexibility of Terraform.
-- Special thanks to the DevSecOps community for best practices and tools.
-
----
-
-Happy policy writing! :shield:
-
